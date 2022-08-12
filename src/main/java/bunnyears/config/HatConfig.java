@@ -3,21 +3,21 @@ package bunnyears.config;
 import bunnyears.BunnyEars;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.Resource;
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraftforge.fml.ModList;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.util.ModelIdentifier;
+import net.minecraft.resource.Resource;
+import net.minecraft.resource.ResourceManager;
+import net.minecraft.util.Identifier;
 
 import javax.annotation.Nullable;
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.file.Files;
@@ -33,9 +33,9 @@ import java.util.Set;
 public class HatConfig {
 
     public static final HatConfig EMPTY = new HatConfig(List.of());
-    private static final ResourceLocation FILE_IDENTIFIER = new ResourceLocation(BunnyEars.MODID, "hats.json");
+    private static final Identifier FILE_IDENTIFIER = new Identifier(BunnyEars.MODID, "hats.json");
 
-    private static HatConfig instance = EMPTY;
+    private static HatConfig instance = HatConfig.EMPTY;
 
     public static final Codec<HatConfig> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             HatConfigSpec.CODEC.listOf().optionalFieldOf("hats", List.of()).forGetter(HatConfig::getHatConfigSpecs)
@@ -61,8 +61,8 @@ public class HatConfig {
         return ImmutableMap.copyOf(hatConfigMap);
     }
 
-    public Collection<ResourceLocation> getModels() {
-        ImmutableSet.Builder<ResourceLocation> builder = ImmutableSet.builder();
+    public Collection<Identifier> getModels() {
+        ImmutableList.Builder<Identifier> builder = ImmutableList.builder();
         for (HatConfigSpec spec : hatConfigSpecs) {
             for (HatModel hatModel : spec.getModels()) {
                 builder.add(hatModel.getModel());
@@ -72,7 +72,7 @@ public class HatConfig {
     }
 
     @Nullable
-    public ResourceLocation getModel(final String name, final int damagePercent) {
+    public Identifier getModel(final String name, final int damagePercent) {
         HatConfigSpec spec = hatConfigMap.getOrDefault(name, HatConfigSpec.EMPTY);
         for (HatModel model : spec.getModels()) {
             if (damagePercent >= model.getDamage()) {
@@ -107,7 +107,7 @@ public class HatConfig {
 
     public static HatConfig instance() {
         if (instance.isEmpty()) {
-            loadConfig(Minecraft.getInstance().getResourceManager());
+            loadConfig(MinecraftClient.getInstance().getResourceManager());
         }
         return instance;
     }
@@ -116,17 +116,16 @@ public class HatConfig {
         Gson gson = new Gson();
         try {
             // locate the resource
-            List<Resource> list = manager.getResourceStack(FILE_IDENTIFIER);
+            List<Resource> list = manager.getAllResources(FILE_IDENTIFIER);
             if(list.isEmpty()) {
                 BunnyEars.LOGGER.error("Failed to locate HatConfig at " + FILE_IDENTIFIER);
             }
-            // remove old resources
             instance.clear();
 
             // load each resource
             for(Resource inputStream : list) {
                 // read the file
-                Reader reader = new InputStreamReader(inputStream.open(), "UTF-8");
+                Reader reader = new InputStreamReader(inputStream.getInputStream(), "UTF-8");
                 JsonObject json = gson.fromJson(reader, JsonObject.class);
                 reader.close();
 

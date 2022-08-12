@@ -2,33 +2,39 @@ package bunnyears.config;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.util.ModelIdentifier;
+import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
 public class HatModel implements Comparable<HatModel> {
-    public static final HatModel EMPTY = new HatModel(0, new ResourceLocation("empty"));
+    public static final HatModel EMPTY = new HatModel(0, new Identifier("empty"));
 
     public static final Codec<HatModel> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.INT.optionalFieldOf("damage", 0).forGetter(HatModel::getDamage),
-            ResourceLocation.CODEC.fieldOf("model").forGetter(HatModel::getModel)
+            Identifier.CODEC.fieldOf("model").forGetter(HatModel::getModel)
     ).apply(instance, HatModel::new));
 
     private final int damage;
-    private final ResourceLocation model;
+    private final Identifier model;
 
-    public HatModel(int damage, ResourceLocation model) {
+    public HatModel(int damage, Identifier model) {
         this.damage = damage;
-        this.model = new ResourceLocation(model.getNamespace(), "hat/" + model.getPath());
+        this.model = new Identifier(model.getNamespace(), "hat/" + model.getPath());
     }
 
     public int getDamage() {
         return damage;
     }
 
-    public ResourceLocation getModel() {
+    public Identifier getModel() {
         return model;
+    }
+
+    @Override
+    public int compareTo(@NotNull HatModel o) {
+        return o.damage - this.damage;
     }
 
     @Override
@@ -42,11 +48,6 @@ public class HatModel implements Comparable<HatModel> {
     @Override
     public int hashCode() {
         return Objects.hash(damage, model);
-    }
-
-    @Override
-    public int compareTo(@NotNull HatModel o) {
-        return o.damage - this.damage;
     }
 
     @Override

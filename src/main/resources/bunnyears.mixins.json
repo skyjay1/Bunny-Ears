@@ -2,11 +2,12 @@
   "required": false,
   "package": "bunnyears.mixin",
   "compatibilityLevel": "JAVA_17",
-  "refmap": "bunnyears.refmap.json",
+  "refmap": "bunnyears-refmap.json",
   "mixins": [
   ],
   "client": [
-    "HumanoidArmorLayerMixin"
+    "ItemRendererAccessor",
+    "ArmorFeatureRendererMixin"
   ],
   "minVersion": "0.8"
 }
