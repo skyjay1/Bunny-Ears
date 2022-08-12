@@ -1,0 +1,18 @@
+modLoader="javafml"
+loaderVersion="[41,)"
+license="GNU GPLv3"
+
+[[mods]]
+    modId="bunnyears"
+    version="19.0.1-forge"
+    displayName="Bunny Ears"
+    authors="skyjay1"
+    displayTest="IGNORE_ALL_VERSION"
+    description='''Cosmetic ears and hats'''
+
+[[dependencies.bunnyears]]
+    modId="forge"
+    mandatory=true
+    versionRange="[41,)"
+    ordering="NONE"
+    side="CLIENT"

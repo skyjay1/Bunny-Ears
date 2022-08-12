@@ -1,0 +1,20 @@
+{
+  "hats": [
+    {
+      "name": "bunny",
+      "hat": [
+        {
+          "model": "bunnyears:bunny_ears"
+        },
+        {
+          "damage": 65,
+          "model": "bunnyears:bunny_ears_one_down"
+        },
+        {
+          "damage": 75,
+          "model": "bunnyears:bunny_ears_both_down"
+        }
+      ]
+    }
+  ]
+}

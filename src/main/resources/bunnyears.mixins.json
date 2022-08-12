@@ -1,0 +1,12 @@
+{
+  "required": false,
+  "package": "bunnyears.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "bunnyears.refmap.json",
+  "mixins": [
+  ],
+  "client": [
+    "HumanoidArmorLayerMixin"
+  ],
+  "minVersion": "0.8"
+}
