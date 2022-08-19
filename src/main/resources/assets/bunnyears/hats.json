@@ -1,20 +1,33 @@
 {
-  "hats": [
-    {
-      "name": "bunny",
-      "hat": [
+  "head": {
+    "bunny": {
+      "head_part": [
         {
-          "model": "bunnyears:bunny_ears"
+          "model": "bunnyears:head/bunny_ears"
         },
         {
           "damage": 65,
-          "model": "bunnyears:bunny_ears_one_down"
+          "model": "bunnyears:head/bunny_ears_one_down"
         },
         {
           "damage": 75,
-          "model": "bunnyears:bunny_ears_both_down"
+          "model": "bunnyears:head/bunny_ears_both_down"
         }
-      ]
+      ],
+      "chest_part": [],
+      "left_arm_part": [],
+      "right_arm_part": [],
+      "right_leg_part": [],
+      "left_leg_part": []
     }
-  ]
+  },
+  "chest": {
+
+  },
+  "legs": {
+
+  },
+  "feet": {
+
+  }
 }

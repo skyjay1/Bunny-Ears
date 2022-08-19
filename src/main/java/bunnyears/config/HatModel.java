@@ -2,7 +2,6 @@ package bunnyears.config;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,7 +20,7 @@ public class HatModel implements Comparable<HatModel> {
 
     public HatModel(int damage, Identifier model) {
         this.damage = damage;
-        this.model = new Identifier(model.getNamespace(), "hat/" + model.getPath());
+        this.model = new Identifier(model.getNamespace(), model.getPath());
     }
 
     public int getDamage() {
@@ -30,11 +29,6 @@ public class HatModel implements Comparable<HatModel> {
 
     public Identifier getModel() {
         return model;
-    }
-
-    @Override
-    public int compareTo(@NotNull HatModel o) {
-        return o.damage - this.damage;
     }
 
     @Override
@@ -48,6 +42,11 @@ public class HatModel implements Comparable<HatModel> {
     @Override
     public int hashCode() {
         return Objects.hash(damage, model);
+    }
+
+    @Override
+    public int compareTo(@NotNull HatModel o) {
+        return o.damage - this.damage;
     }
 
     @Override

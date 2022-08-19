@@ -29,7 +29,7 @@ public class BunnyEars implements ClientModInitializer {
         ModelLoadingRegistry.INSTANCE.registerModelProvider(new ExtraModelProvider() {
             @Override
             public void provideExtraModels(ResourceManager manager, Consumer<Identifier> out) {
-                for(Identifier modelId : HatConfig.instance().getModels()) {
+                for(Identifier modelId : HatConfig.instance().getModelsToRegister()) {
                     out.accept(modelId);
                     LOGGER.debug("Registering model: " + modelId);
                 }
