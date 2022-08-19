@@ -4,7 +4,7 @@ license="GNU GPLv3"
 
 [[mods]]
     modId="bunnyears"
-    version="19.0.1-forge"
+    version="19.0.2-forge"
     displayName="Bunny Ears"
     authors="skyjay1"
     displayTest="IGNORE_ALL_VERSION"

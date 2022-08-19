@@ -22,7 +22,7 @@ public class BEClientEvents {
          */
         @SubscribeEvent
         public static void registerModel(final ModelEvent.RegisterAdditional event) {
-            for(ResourceLocation modelId : HatConfig.instance().getModels()) {
+            for(ResourceLocation modelId : HatConfig.instance().getModelsToRegister()) {
                 event.register(modelId);
             }
         }

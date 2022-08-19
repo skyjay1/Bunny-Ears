@@ -7,7 +7,7 @@ plugins {
 
 apply plugin: 'org.spongepowered.mixin'
 
-version = '19.0.1-forge'
+version = '19.0.2-forge'
 group = 'bunnyears' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'bunnyears'
 

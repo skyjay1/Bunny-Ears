@@ -1,44 +1,49 @@
 package bunnyears.config;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
 public class HatConfigSpec {
 
-    public static final HatConfigSpec EMPTY = new HatConfigSpec("empty", List.of());
+    public static final HatConfigSpec EMPTY = new HatConfigSpec(Map.of());
 
-    public static final Codec<HatConfigSpec> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.STRING.fieldOf("name").forGetter(HatConfigSpec::getName),
-            Codec.either(HatModel.CODEC, HatModel.CODEC.listOf())
-                    .xmap(either -> either.map(ImmutableList::of, Function.identity()),
-                            list -> list.size() == 1 ? Either.left(list.get(0)) : Either.right(list))
-                    .optionalFieldOf("hat", List.of()).forGetter(HatConfigSpec::getModels)
-    ).apply(instance, HatConfigSpec::new));
+    /**
+     * HatConfigSpec is defined the same way as a map where
+     * key=HumanoidModelPart and value=one or more HatModels
+     */
+    public static final Codec<HatConfigSpec> CODEC = Codec.unboundedMap(HumanoidModelPart.CODEC,
+                    Codec.either(HatModel.CODEC, HatModel.CODEC.listOf())
+                            .xmap(either -> either.map(ImmutableList::of, Function.identity()),
+                                    list -> list.size() == 1 ? Either.left(list.get(0)) : Either.right(list)))
+            .xmap(HatConfigSpec::new, HatConfigSpec::getModels);
 
+    private final Map<HumanoidModelPart, List<HatModel>> models;
 
-    private final String name;
-    private final List<HatModel> models;
-
-    public HatConfigSpec(String name, List<HatModel> models) {
-        this.name = name;
-        List<HatModel> list = new ArrayList<>(models);
-        list.sort(HatModel::compareTo);
-        this.models = ImmutableList.copyOf(list);
+    public HatConfigSpec(Map<HumanoidModelPart, List<HatModel>> models) {
+        ImmutableMap.Builder<HumanoidModelPart, List<HatModel>> builder = ImmutableMap.builder();
+        for (Map.Entry<HumanoidModelPart, List<HatModel>> entry : models.entrySet()) {
+            // sort the list to ensure it can be used with durability values
+            List<HatModel> list = new ArrayList<>(entry.getValue());
+            list.sort(HatModel::compareTo);
+            builder.put(entry.getKey(), list);
+        }
+        this.models = builder.build();
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public List<HatModel> getModels() {
+    public Map<HumanoidModelPart, List<HatModel>> getModels() {
         return models;
+    }
+
+    public List<HatModel> getModels(HumanoidModelPart part) {
+        return models.getOrDefault(part, List.of());
     }
 
     @Override
@@ -46,19 +51,18 @@ public class HatConfigSpec {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         HatConfigSpec that = (HatConfigSpec) o;
-        return Objects.equals(name, that.name) && Objects.equals(models, that.models);
+        return Objects.equals(models, that.models);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, models);
+        return Objects.hash(models);
     }
 
     @Override
     public String toString() {
         return "HatConfigSpec{" +
-                "name='" + name + '\'' +
-                ", models=" + models +
+                "models=" + models +
                 '}';
     }
 }

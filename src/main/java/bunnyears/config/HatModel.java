@@ -20,7 +20,7 @@ public class HatModel implements Comparable<HatModel> {
 
     public HatModel(int damage, ResourceLocation model) {
         this.damage = damage;
-        this.model = new ResourceLocation(model.getNamespace(), "hat/" + model.getPath());
+        this.model = new ResourceLocation(model.getNamespace(), model.getPath());
     }
 
     public int getDamage() {
